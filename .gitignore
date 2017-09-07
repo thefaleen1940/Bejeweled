@@ -5,3 +5,4 @@
 /test-output/
 *.swp
 *.swo
+/.settings/org.eclipse.buildship.core.prefs
