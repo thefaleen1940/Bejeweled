@@ -12,7 +12,7 @@ repositories {
 }
 
 dependencies {
-    compile 'com.github.cs125-illinois:Zen:1.0.1'
+    compile 'com.github.cs125-illinois:zen:1.0.2'
 }
 
 checkstyle {
