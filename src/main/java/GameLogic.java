@@ -217,7 +217,6 @@ public class GameLogic {
         for (int x = 0; x < gemNumber; x++) {
             for (int y = 0; y < gemNumber; y++) {
                 gameState[x][y] = rotatedGame[x][y];
-                //gameState[x][y].moveGem(x * pixelsPerGem(), (gemNumber - 1 - y) * pixelsPerGem());
             }
         }
     }
