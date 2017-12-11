@@ -11,8 +11,8 @@ public class GameLogic {
         System.out.println(game.leftRotations);
         Scanner sc = new Scanner(System.in);
         while(true) {
-        while (!game.swapAttempt(sc.nextInt(), sc.nextInt(), sc.nextInt(), sc.nextInt())) {}
-        game.printBoard();
+            while (!game.swapAttempt(sc.nextInt(), sc.nextInt(), sc.nextInt(), sc.nextInt())) {}
+            game.printBoard();
         }
     }
     // Board width and height dimensions for playing field in pixels.
@@ -163,7 +163,7 @@ public class GameLogic {
     }
 
     public void fallToggle() {
-        for (int y = gemNumber - 2; y >= 0; y--) {
+        for (int y = gemNumber - 1; y >= 0; y--) {
             for (int x = 0; x < gemNumber; x++) {
                 Gem gem = gameState[x][y];
                 if (gem.isMatched()) {
@@ -181,13 +181,14 @@ public class GameLogic {
 
     private boolean fallLoop() {
         boolean repeat = false;
-        for (int y = gemNumber - 2; y >= 0; y--) {
+        for (int y = gemNumber - 1; y >= 0; y--) {
             for (int x = 0; x < gemNumber; x++) {
                 Gem gem = gameState[x][y];
                 if (gem.isMatched()) {
                     repeat = true;
-                    swap(x, y, x, y + 1);
-                    if (y == (gemNumber - 2)) {
+                    if (y != gemNumber - 1) {
+                        swap(x, y, x, y + 1);
+                    } else {
                         Gem change = gameState[x][gemNumber - 1];
                         change.setType(Gem.Type.getRandomGem());
                         change.setMatched(false);
