@@ -1,30 +1,36 @@
-import java.lang.reflect.GenericArrayType;
 import java.util.ArrayList;
-import java.util.Scanner;
-
 import edu.illinois.cs.cs125.lib.zen.Zen;
+/**
+ * The main control scheme of the game. Is a bejeweled clone with 6 gem types that
+ * can be swapped 1 tile horizontally or vertically. If a group of 3+ is formed, the
+ * tiles are removed and new tiles fall in to take their place.
+ */
 public class GameLogic {
-    public static void main(String[] args) {
-        GameLogic game = new GameLogic();
-        game.fixCoords();
-        game.printBoard();
-        System.out.println(game.leftRotations);
-        Scanner sc = new Scanner(System.in);
-        while(true) {
-            while (!game.swapAttempt(sc.nextInt(), sc.nextInt(), sc.nextInt(), sc.nextInt())) {}
-            game.printBoard();
-        }
-    }
-    // Board width and height dimensions for playing field in pixels.
+    /**
+     *  Board width and height dimensions for playing field in pixels.
+     */
     private int boardDimensions;
+    /**
+     * Current array of gems in the board.
+     */
     private Gem[][] gameState;
-    //Number of gems per row/column.
+    /**
+     * Number of gems per row/column.
+     */
     private int gemNumber;
+    /**
+     * Current score, 1 per gem removed.
+     */
     private int score;
+    /**
+     * Number of left rotations used in checking for matches and board generation,
+     * used to re-orient board.
+     */
     private int leftRotations;
-    private boolean hasStarted;
-    ArrayList<int[]> matchedOnly = new ArrayList<int[]>();
 
+    /**
+     * Makes a new game board with default values.
+     */
     public GameLogic() {
         this(800, 8);
     }
@@ -38,8 +44,6 @@ public class GameLogic {
         populateBoard();
         turnCheck();
         fixCoords();
-        hasStarted = true;
-
     }
 
     public int getGemNumber() {
@@ -83,17 +87,13 @@ public class GameLogic {
     }
 
     private boolean swapAttempt(int x1, int y1, int x2, int y2) {
-        System.out.println("Trying to swap(" + x1 + "," + y1 + ")" + getGemAt(x1, y1).getGem() + ", " + "(" + x2 + "," + y2 + ")" + getGemAt(x2, y2).getGem());
         swap(x1, y1, x2, y2);
         int matches = clearAllMatches();
         if (matches > 0) {
             fallToggle();
-            System.out.println("success");
-            printBoard();
             return true;
         } else {
             swap(x1, y1, x2, y2);
-            System.out.println("failure");
             return false;
         }
     }
@@ -115,7 +115,6 @@ public class GameLogic {
     }
 
     private void swap(int x1, int y1, int x2, int y2) {
-        System.out.println("swap" + x1 + " " + y1 + " " + x2 + " " + y2 + " ");
         Gem copy = new Gem(gameState[x1][y1]);
         gameState[x1][y1] = new Gem(gameState[x2][y2]);
         gameState[x2][y2] = new Gem(copy);
@@ -157,7 +156,6 @@ public class GameLogic {
 
     private void remove(int x, int y, int gemCount) {
         for (int clearPosition = 0; clearPosition < gemCount; clearPosition++) {
-            System.out.println("x" + x + " y" + (y - gemCount + clearPosition) + "matched");
             gameState[x][y - gemCount + clearPosition].setMatched(true);
         }
     }
@@ -173,7 +171,7 @@ public class GameLogic {
         }
         boolean repeat = false;
         do {
-            Zen.sleep(500);
+            Zen.sleep(100);
             repeat = fallLoop();
             GameWindow.redrawScreen(this);
         } while (repeat);
