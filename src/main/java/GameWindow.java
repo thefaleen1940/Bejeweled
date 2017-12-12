@@ -59,6 +59,7 @@ public class GameWindow {
         Zen.fillOval(800, 50, 100, 100);
         Zen.setColor("white");
         Zen.drawText("Score: " + Integer.toString(game.score), 810, 100);
+
     }
 
 
