@@ -34,7 +34,11 @@ public class GameLogic {
     public GameLogic() {
         this(800, 8);
     }
-
+    /**
+     * Make a new game board and populate it.
+     * @param dim Width and height of board.
+     * @param gemNum Number of gems in each row and column.
+     */
     public GameLogic(int dim, int gemNum) {
         leftRotations = 0;
         boardDimensions = dim;
@@ -45,11 +49,16 @@ public class GameLogic {
         turnCheck();
         fixCoords();
     }
-
+    /**
+     * @return Width of board in gems.
+     */
     public int getGemNumber() {
         return gemNumber;
     }
-
+    /**
+     * Fill the board with random gems and replace matching gems with random gems until
+     * a valid starting position is reached.
+     */
     private void populateBoard() {
         for (int x = 0; x < gemNumber; x++) {
             for (int y = 0; y < gemNumber; y++) {
@@ -67,7 +76,9 @@ public class GameLogic {
         } while (checkForMatches() > 0);
         score = 0;
     }
-
+    /**
+     * Helper function of checkForMatches that rotates the board and checks for more matches.
+     */
     private void turnCheck() {
         leftRotations = 0;
         rotateLeft();
@@ -79,14 +90,28 @@ public class GameLogic {
             rotateLeft();
         }
     }
-
+    /**
+     * External swap attempt of 2 neighboring gems. Validates input.
+     * @param x1 x index of first gem to swap
+     * @param y1 y index of first gem to swap
+     * @param x2 x index of second gem to swap
+     * @param y2 y index of second gem to swap
+     * @return true if successful swap (makes 3+ match).
+     */
     public boolean swapAttemptGame(int x1, int y1, int x2, int y2) {
         if(Math.abs(x1 - x2) + Math.abs(y1 - y2) == 1) {
             return swapAttempt(x1, gemNumber - 1 - y1, x2, gemNumber - 1 - y2);
         }
         return false;
     }
-
+    /**
+     * Attempt to swap any 2 gems on the board.
+     * @param x1 x index of first gem to swap
+     * @param y1 y index of first gem to swap
+     * @param x2 x index of second gem to swap
+     * @param y2 y index of second gem to swap
+     * @return true if successful swap (makes 3+ match).
+     */
     private boolean swapAttempt(int x1, int y1, int x2, int y2) {
         swap(x1, y1, x2, y2);
         int matches = clearAllMatches();
@@ -98,13 +123,20 @@ public class GameLogic {
             return false;
         }
     }
-
+    /**
+     * Do clean up of any additional matches after swapping gems.
+     * @return Number of additional matches.
+     */
     public int afterTurn() {
         int matches = clearAllMatches();
         fallToggle();
         return matches;
     }
-
+    /**
+     *
+     * Mark all vertical and horizontal matches for removal.
+     * @return number of matches cleared.
+     */
     private int clearAllMatches() {
         int matches = checkForMatches();
         rotateLeft();
@@ -114,7 +146,13 @@ public class GameLogic {
         }
         return matches;
     }
-
+    /**
+     * Swap 2 gems no matter the board conditions.
+     * @param x1 x index of first gem to swap
+     * @param y1 y index of first gem to swap
+     * @param x2 x index of second gem to swap
+     * @param y2 y index of second gem to swap
+     */
     private void swap(int x1, int y1, int x2, int y2) {
         Gem copy = new Gem(gameState[x1][y1]);
         gameState[x1][y1] = new Gem(gameState[x2][y2]);
@@ -122,11 +160,16 @@ public class GameLogic {
         gameState[x1][y1].moveGem(x1 * pixelsPerGem(), (gemNumber - y1 - 1) * pixelsPerGem());
         gameState[x2][y2].moveGem(x2 * pixelsPerGem(), (gemNumber - y2 - 1) * pixelsPerGem());
     }
-
+    /**
+     * @return Number of pixels each gem will need.
+     */
     public int pixelsPerGem() {
         return boardDimensions / gemNumber;
     }
-
+    /**
+     * Check for and mark for removal any vertical 3+ matches.
+     * @return number of matches.
+     */
     private int checkForMatches() {
         int removals = 0;
         for (int x = 0; x < gemNumber; x++) {
@@ -155,7 +198,12 @@ public class GameLogic {
 
         return removals;
     }
-
+    /**
+     * Mark series of gems at specified index for removal and keep track of score.
+     * @param x x index of gem for removal
+     * @param y y index of gem for removal
+     * @param gemCount number of gems in a row that have to be removed
+     */
     private void remove(int x, int y, int gemCount) {
         for (int clearPosition = 0; clearPosition < gemCount; clearPosition++) {
             gameState[x][y - gemCount + clearPosition].setMatched(true);
@@ -164,7 +212,9 @@ public class GameLogic {
             System.out.println("score is " + score);
         }
     }
-
+    /**
+     * Start falling animation for all gems.
+     */
     public void fallToggle() {
         for (int y = gemNumber - 1; y >= 0; y--) {
             for (int x = 0; x < gemNumber; x++) {
@@ -181,7 +231,10 @@ public class GameLogic {
             GameWindow.redrawScreen(this);
         } while (repeat);
     }
-
+    /**
+     * Helper for fallToggle that runs until no more gems need to fall.
+     * @return whether fallToggle needs to be called again
+     */
     private boolean fallLoop() {
         boolean repeat = false;
         for (int y = gemNumber - 1; y >= 0; y--) {
@@ -201,7 +254,9 @@ public class GameLogic {
         }
         return repeat;
     }
-
+    /**
+     * Fix any potential errors in the coordinates of each gem.
+     */
     private void fixCoords() {
         for(int x = 0; x < gemNumber; x++) {
             for (int y = 0; y < gemNumber; y++) {
@@ -209,7 +264,9 @@ public class GameLogic {
             }
         }
     }
-
+    /**
+     * Rotate game board 90 degrees to the left.
+     */
     private void rotateLeft() {
         leftRotations++;
         Gem[][] rotatedGame = new Gem[gemNumber][gemNumber];
@@ -224,7 +281,9 @@ public class GameLogic {
             }
         }
     }
-
+    /**
+     * Print out a text version of the board.
+     */
     public void printBoard() {
         for (int y = gemNumber - 1; y >= 0; y--) {
             for (int x = 0; x < gemNumber; x++) {
@@ -235,7 +294,12 @@ public class GameLogic {
         }
         System.out.println();
     }
-
+    /**
+     * Get gem at specified index.
+     * @param x x index
+     * @param y y index
+     * @return gem at index
+     */
     public Gem getGemAt(int x, int y) {
         return gameState[x][gemNumber - 1 - y];
     }
