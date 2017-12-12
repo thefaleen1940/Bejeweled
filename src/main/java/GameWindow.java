@@ -5,7 +5,7 @@ public class GameWindow {
     int dim = game.getGemNumber();
     public static void main(final String[] unused) {
         GameLogic game = new GameLogic();
-        Zen.create(800, 800);
+        Zen.create(900, 800);
         redrawScreen(game);
         int xPosOld = -1;
         int yPosOld = -1;
@@ -55,7 +55,13 @@ public class GameWindow {
                 drawGem(game.getGemAt(x, y));
             }
         }
+        Zen.setColor("black");
+        Zen.fillOval(800, 50, 100, 100);
+        Zen.setColor("white");
+        Zen.drawText("Score: " + Integer.toString(game.score), 810, 100);
     }
+
+
 
     public static void drawGem(Gem gem) {
         switch (gem.getGem()) {

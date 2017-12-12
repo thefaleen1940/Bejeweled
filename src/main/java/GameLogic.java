@@ -21,7 +21,7 @@ public class GameLogic {
     /**
      * Current score, 1 per gem removed.
      */
-    private int score;
+    int score;
     /**
      * Number of left rotations used in checking for matches and board generation,
      * used to re-orient board.
@@ -160,6 +160,7 @@ public class GameLogic {
         for (int clearPosition = 0; clearPosition < gemCount; clearPosition++) {
             gameState[x][y - gemCount + clearPosition].setMatched(true);
             score++;
+
             System.out.println("score is " + score);
         }
     }
